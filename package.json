@@ -1,0 +1,29 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^5.0.0-beta2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "jade": "^1.11.0",
+    "jave": "^0.2.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "mongoose": "^5.11.13",
+    "nodemon": "^2.0.7",
+    "randomcolor": "^0.6.2",
+    "redis": "^3.0.2",
+    "socket.io": "^2.4.1",
+    "uuid": "^8.3.2",
+    "validator": "^13.5.2"
+  }
+}

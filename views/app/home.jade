@@ -1,0 +1,112 @@
+extends ../layout.jade 
+block contenedor
+    div(class="container")
+            //div(id="chartContainer" style="height: 370px; width:100%;")
+            div(id="chart")
+            form(name="fomul") 
+                h1 Valoración sobre este web: 
+                select(name="miSelect" id="miSelect")
+                br 
+                //input(type="button" value="Selecion" onclick="dimePropiedades()") 
+            
+        div(class="clearfix")
+            h1
+                a(href="/disp_registrar" class="btn btn-info") Agregar un equipo
+            h1 usuario#{ user.email}
+            br
+           
+    script.
+        var chipid = "";
+        var Datas = 0;
+        var selecionw=0;
+     
+        //var socket = io();
+        var socket = io.connect('http://www.memate.tk:80', {transports: ['polling']});
+        var entro=0;
+        if(entro == 0)
+        {
+            //alert('l Mensaje Esta En Blanco');
+            socket.emit('nuevo',"#{user._id}")
+            entro =1;
+        }
+        socket.on('dispositivo', function (doc) {
+            
+            var obj1 = JSON.stringify(doc);
+            var obj = JSON.parse(obj1);
+            //alert(obj);
+                for (var i = 0; i < obj.length; i++){
+                //alert(obj[i].nombre);
+
+                $('#miSelect').append( $('<option value='+obj[i].chipid+' >').html(obj[i].nombre+""));
+                    if(selecionw == 0){
+                        chipid = obj[i].chipid;
+                        selecionw = 1;
+                       // oldeMensaje();
+                    }
+            }
+        });
+       
+        var select = document.getElementById('miSelect');
+        select.addEventListener('change',
+        function(){
+        var selectedOption = this.options[select.selectedIndex];
+        console.log(selectedOption.value + ': ' + selectedOption.text);
+        chipid = selectedOption.value ;
+           oldeMensaje();
+          // setTimeout(mamola(),100);
+          //  socket.on('evento_lbx',"hola");
+        });
+        function oldeMensaje() {
+        var cod = document.getElementById("miSelect").value;
+            chipid = cod;
+           // socket.emit('cambio',chipid);
+
+          // alert(chipid);
+        };              
+        ///////////////////////
+      
+        //////////////////////
+        setTimeout(mamola(),100);
+      
+            var chart;
+            chart = new Highcharts.Chart({
+            chart:{
+            renderTo:'chart',
+            defaultSeriesType:'line',
+            events:{
+                load:function(){
+                    //Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    //chipid prueba 2393796
+                     alert(chipid);
+                    socket.on(chipid, function (time,bateria){
+                   var series = chart.series[0].addPoint([time,bateria],true);
+                    alert(chipid);
+                    //series.addPoint([time,bateria]);
+                    //nsole.log(time)
+                    });
+                }
+            }},
+            rangeSelector:{
+                selected:100
+            },title:{
+                text: 'Status LBX'
+            },xAxis:{
+                type: 'datetime',
+                tickPixelInterval: 150,
+                maxZoom: 10 * 1000
+            },yAxis:{
+                max:15,
+                min:0,
+                minPadding: 5.2,
+                maxPadding: 5.2,
+                title: {
+                text: 'Carga Bateria',
+
+                margin: 80
+               
+            }
+            },series:[{
+                name:'Carga',
+                bateria:[]
+            }]
+        })

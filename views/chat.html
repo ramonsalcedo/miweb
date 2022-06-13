@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sala de chat</title>
+  <style>
+    body{font-family: Arial;}
+  </style>
+</head>
+<body onload="oldeMensaje()">
+<div>
+  <h3>Mensajes:</h3>
+  <ul id="listado-msjs"></ul>
+</div>
+<div>
+<input id="nuevo-nonb"  placeholder="Nombre" require>
+</div>
+  <div id="env-msjs">
+      <input id="nuevo-msj"  placeholder="Nuevo mensaje" > 
+      <button id="btn-msj" onclick="enviarMensaje()" >Enviar</button>
+  </div>
+  
+   <div> <button id="Apagar" onclick="Apagar()" value="Apagar" >Apagar</button></div>
+   <div> <button id="Encendido" onclick="Encendido()" value="Encendido">Encendido</button></div>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="/socket.io/socket.io.js">
+
+</script>
+  <script>
+    var socket = io(); // Inicializamos socketIO en el cliente
+     
+    /*
+     * Evento listener para el 'nuevo mensaje'
+     *   Se puede ver que es el mismo evento que se envia 
+     *   desde el servidor.
+     * Agregamos el mensaje ingresado por el usuario a la lista.
+     */
+    socket.on('nuevo mensaje', function (msj,nomb) {
+      $('#listado-msjs').append( $('<li>').html(nomb +":"+ msj) );
+    });
+  socket.on('usuario des', function (doc) {
+      var usu = JSON.stringify(doc);     
+      var usu1 = JSON.parse(usu);
+    //alert(usu);
+  for (var i = 0; i < usu1.length; i++){
+      $('#listado-msjs').append( $('<li>').html("Usuario "+ usu1[i].usuario+" Desconectado"));
+  }
+    });
+  
+    socket.on('old mensaje', function (doc) {
+      var obj1 = JSON.stringify(doc);     
+      var obj = JSON.parse(obj1);
+     // alert(obj1);
+      
+     for (var i = 0; i < obj.length; i++){
+     if(obj[i].usuario != null){
+     $('#listado-msjs').append( $('<li>').html( obj[i].usuario +" : "+ obj[i].mensajess) );
+      }
+     // div.innerHTML = div.innerHTML + "<p class='inner' id="+i+">"+ obj[i].mensajess +"</p>" + "<br>";
+     }
+   //   alert(obj[i]);
+       //  div.innerHTML = div.innerHTML + "<p class='inner' id="+i+">"+ obj[i] +"</p>" + "<br>";
+     //  $('#listado-msjs').append( $('<li>').text(obj.mensajess) );
+    });
+     
+    /*
+     * Emitimos un evento de tipo 'nuevo mensaje' cada vez
+     * que se presiona el botón enviar y enviamos
+     * su contenido como mensaje.
+     */
+    function enviarMensaje() {
+     //alert($('#nuevo-msj').val());
+    //alert($('#nuevo-nonb').val());
+    
+    if($('#nuevo-msj').val() != "" && $('#nuevo-nonb').val() != "")
+    {        
+   socket.emit('nuevo mensaje', $('#nuevo-msj').val(),$('#nuevo-nonb').val() );
+     $('#nuevo-msj').val('');
+    }else{
+    if($('#nuevo-msj').val() == "" ){
+    alert("El Mensaje Esta En Blanco");
+    }
+    if($('#nuevo-nonb').val() == "" )
+     {
+    alert("El nombre Esta En Blanco");
+    }
+    
+    }
+    };
+    function Encendido() {
+     //alert($('#Encendido').val());
+    //alert($('#nuevo-nonb').val());
+    
+          
+   socket.emit('LBX', $('#Encendido').val());
+     //$('#Encendido').val('');
+    
+    
+    };
+    function Apagar() {
+    // alert($('#Apagar').val());
+    //alert($('#nuevo-nonb').val());
+   socket.emit('LBX', $('#Apagar').val());
+    // $('#Apagar').val('');
+    
+    
+    };
+    
+  function oldeMensaje() {
+        socket.emit('old mensaje', $('#nuevo-msj').val());
+        $('#nuevo-msj').val('');
+    };
+  </script>
+</body>
+</html>

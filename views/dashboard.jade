@@ -1,0 +1,79 @@
+extends ./layout.jade 
+block contenedor
+    div(class="container")
+            //div(id="chartContainer" style="height: 370px; width:100%;")
+            div(id="chart")
+        div(class="clearfix")
+            h1
+                a(href="/disp_registrar" class="btn btn-info") Agregar un equipo
+            h1 usuario#{ user.email }
+    script.
+        var Datas = 0
+        var socket = io()
+        socket.on('Nuevo', function (doc) {
+            var obj1 = JSON.stringify(doc)
+            var obj = JSON.parse(obj1)
+            Datas=obj.now
+        })
+        function Envio(){
+            socket.emit('nuevo_enviar', $('#Envio').val())
+            $('#nuevo-msj').val('')
+        } 
+        function enviarMensaje(){
+            if($('#nuevo-msj').val() != "" && $('#nuevo-nonb').val() != "")
+            {
+                socket.emit('nuevo mensaje', $('#nuevo-msj').val(),$('#nuevo-nonb').val())
+                $('#nuevo-msj').val('')
+            }
+                else{
+                    if($('#nuevo-msj').val() == "" ){
+                        alert("El Mensaje Esta En Blanco")
+                    }
+            if($('#nuevo-nonb').val() == "" ){
+                alert("El nombre Esta En Blanco")
+                }
+            }
+        }
+       
+        var chipid;
+        var chart;
+        chart = new Highcharts.Chart({
+            chart:{
+            renderTo:'chart',
+            defaultSeriesType:'line',
+            events:{
+                load:function(){
+                
+                    //Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    //chipid prueba 2393796
+                    socket.on('9003856', function (time,bateria){
+                    var series = chart.series[0].addPoint([time,bateria],true);
+                    //series.addPoint([time,bateria]);
+                    //nsole.log(time)
+                    });
+                }
+            }},
+            rangeSelector:{
+                selected:100
+            },title:{
+                text: 'Status LBX'
+            },xAxis:{
+                type: 'datetime',
+                tickPixelInterval: 150,
+                maxZoom: 10 * 1000
+            },yAxis:{
+                max:15,
+                min:0,
+                minPadding: 5.2,
+                maxPadding: 5.2,
+                title: {
+                text: 'Carga Bateria',
+
+                margin: 80
+               
+            }
+            },series:[{
+                name:'Carga',
+                bateria:[]
+            }]
+        });

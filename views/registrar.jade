@@ -1,0 +1,14 @@
+extends ./layout.jade 
+block contenedor
+    div(class="container")
+        div(class="row") 
+            div(class="col-md-6")
+                div(class="card")
+                    form(action="/usurio_registrar" method="post" role="form" class="box")
+                        input(type="text" name="username" id="username" placeholder="Usuario")
+                        input(type="text" name="email" id="email" placeholder="Correo electronico")
+                        input(type="password" name="password" id="password" class="form-control" placeholder="Contraseña")
+                        input(type="password" name="password_confirmation" id="password_confirmation" tabindex="2" class="form-control" placeholder="Confirmar contraseña")
+                        input(type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Crear cuenta")
+                    div(class="col-sm-6 col-sm-offset-3")
+                              

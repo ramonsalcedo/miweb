@@ -1,0 +1,14 @@
+extends ./layout.jade 
+block contenedor
+    div(class="container")
+        div(class="row") 
+            div(class="col-md-6")
+                div(class="card")
+                    
+                    form(action="/disp_registrar" method="post" role="form" class="box")
+                        H1 Agregar dispositivos
+                        input(type="text" name="nombre" id="nombre" class="form-control" placeholder="nombre" required)
+                        input(type="text" name="dipositivo" id="dispositivo" class="form-control" placeholder="Chipid" required)
+                        input(type="submit" name="register-submit" id="register-submit" tabindex="4"  value="Agregar ID")
+                        button(type="button" class="btn btn-light") 
+                            a(href="/app") Regresar 
